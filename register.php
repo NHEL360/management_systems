@@ -1,27 +1,39 @@
 <?php
-include('includes/db.connection.php');
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = $_POST['username'];
-    $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
-    $email = $_POST['email'];
-
-    $stmt = $pdo->prepare("INSERT INTO users (username, password, email) VALUES (?, ?, ?)");
-    $stmt->execute([$username, $password, $email]);
-
-    echo "Registration successful! You can now <a href='login.php'>login</a>";
-}
+// register.php - Registration Page
+session_start();
 ?>
 
-<form method="POST">
-    <label for="username">Username</label>
-    <input type="text" name="username" required>
-
-    <label for="password">Password</label>
-    <input type="password" name="password" required>
-
-    <label for="email">Email</label>
-    <input type="email" name="email">
-
-    <button type="submit">Register</button>
-</form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="register-form">
+            <h2>Register</h2>
+            <?php if (isset($_SESSION['error_message'])) { 
+                echo "<p class='error'>{$_SESSION['error_message']}</p>"; 
+                unset($_SESSION['error_message']); 
+            } ?>
+            <form action="register_process.php" method="POST">
+                <label for="username">Username:</label>
+                <input type="text" name="username" id="username" required>
+                
+                <label for="password">Password:</label>
+                <input type="password" name="password" id="password" required>
+                
+                <label for="email">Email:</label>
+                <input type="email" name="email" id="email" required>
+                
+                <button type="submit" name="register">Register</button>
+            </form>
+            <p>Already have an account? <a href="index.php">Login here</a></p>
+        </div>
+    </div>
+</body>
+</html>

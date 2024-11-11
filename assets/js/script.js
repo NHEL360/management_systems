@@ -1,10 +1,18 @@
-/project-root/assets/js/script.js
-// JavaScript to open and close the modal
-document.getElementById('addProductBtn').onclick = function() {
-    document.getElementById('addProductModal').style.display = 'block';
+// script.js - Modal functionality and animation
+
+// Open Register Modal
+document.getElementById('show-register-modal').onclick = function() {
+    document.getElementById('register-modal').style.display = 'block';
 };
 
-document.getElementById('closeAddProductModal').onclick = function() {
-    document.getElementById('addProductModal').style.display = 'none';
+// Close Register Modal
+document.getElementById('close-register-modal').onclick = function() {
+    document.getElementById('register-modal').style.display = 'none';
 };
-console.log('script.js loaded');
+
+// Close Register Modal if clicked outside
+window.onclick = function(event) {
+    if (event.target === document.getElementById('register-modal')) {
+        document.getElementById('register-modal').style.display = 'none';
+    }
+};
