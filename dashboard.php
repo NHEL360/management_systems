@@ -16,8 +16,9 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute();
 $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-$username = $_SESSION['username'];
-$email = $_SESSION['email'];
+// Fetch user data from session
+$username = isset($_SESSION['username']) ? $_SESSION['username'] : '';
+$email = isset($_SESSION['email']) ? $_SESSION['email'] : '';
 ?>
 
 <!DOCTYPE html>
@@ -32,15 +33,19 @@ $email = $_SESSION['email'];
 <body>
     <!-- Navbar -->
     <nav class="navbar">
-        <a href="dashboard.php">Dashboard</a>
-        
-        <!-- Search Bar -->
-        <div class="search-container">
-            <input type="text" id="searchBar" placeholder="Search..." name="search">
-            <button type="submit" id="searchBtn"><i class="fa fa-search"></i></button>
+        <a href="dashboard.php" class="navbar-brand">Dashboard</a>
+
+        <!-- Navbar Links with Icons -->
+        <div class="nav-links">
+            <a href="#" id="usersBtn"><i class="fa fa-users"></i> Users</a>
+            <a href="#" id="departmentsBtn"><i class="fa fa-building"></i> Departments</a>
+            <a href="#" id="productsBtn"><i class="fa fa-cogs"></i> Products</a>
+            <a href="#" id="categoriesBtn"><i class="fa fa-list"></i> Categories</a>
+            <a href="#" id="inventoryBtn"><i class="fa fa-archive"></i> Inventory</a>
+            <a href="#" id="suppliersBtn"><i class="fa fa-truck"></i> Suppliers</a>
         </div>
 
-        <!-- Dark Mode Toggle Icon -->
+        <!-- Dark Mode Toggle Icon (Left Center) -->
         <div class="toggle-container">
             <label class="switch">
                 <input type="checkbox" id="darkModeToggle">
@@ -48,11 +53,66 @@ $email = $_SESSION['email'];
             </label>
         </div>
 
-        <!-- Logout Button (moved to the right) -->
+        <!-- Search Bar -->
+        <div class="search-container">
+            <input type="text" id="searchBar" placeholder="Search..." name="search">
+            <button type="submit" id="searchBtn"><i class="fa fa-search"></i></button>
+        </div>
+
+        <!-- Logout Button (Right) -->
         <div class="user-info">
-            <button id="logoutBtn">Logout</button>
+            <button id="logoutBtn"><i class="fa fa-user"></i> Logout</button>
         </div>
     </nav>
+
+    <!-- Modals for each button -->
+    <div id="usersModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('usersModal')">&times;</span>
+            <h2>Users Information</h2>
+            <!-- Add content for Users Modal -->
+        </div>
+    </div>
+
+    <div id="departmentsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('departmentsModal')">&times;</span>
+            <h2>Departments Information</h2>
+            <!-- Add content for Departments Modal -->
+        </div>
+    </div>
+
+    <div id="productsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('productsModal')">&times;</span>
+            <h2>Products Information</h2>
+            <!-- Add content for Products Modal -->
+        </div>
+    </div>
+
+    <div id="categoriesModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('categoriesModal')">&times;</span>
+            <h2>Categories Information</h2>
+            <!-- Add content for Categories Modal -->
+        </div>
+    </div>
+
+    <div id="inventoryModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('inventoryModal')">&times;</span>
+            <h2>Inventory Information</h2>
+            <!-- Add content for Inventory Modal -->
+        </div>
+    </div>
+
+    <div id="suppliersModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('suppliersModal')">&times;</span>
+            <h2>Suppliers Information</h2>
+            <!-- Add content for Suppliers Modal -->
+        </div>
+    </div>
 
     <!-- Main Content -->
     <div class="container">
@@ -87,7 +147,7 @@ $email = $_SESSION['email'];
     <!-- Add User Modal -->
     <div id="addUserModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
+            <span class="close" onclick="closeModal('addUserModal')">&times;</span>
             <h2>Add User</h2>
             <form action="add_user.php" method="POST">
                 <label for="username">Username:</label>
@@ -138,17 +198,39 @@ $email = $_SESSION['email'];
     padding: 10px 20px;
 }
 
-.navbar a {
+/* Navbar Links */
+.nav-links {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
     color: #f2f2f2;
     padding: 14px 16px;
     text-decoration: none;
     font-size: 18px;
 }
 
+.navbar .navbar-brand {
+    color: #f2f2f2;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+/* Dark Mode Toggle */
+.toggle-container {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    left: 70%;
+    transform: translateX(-50%);
+}
+
 /* Search Bar */
 .search-container {
     display: flex;
     align-items: center;
+    margin-right: 10px;
 }
 
 .search-container input[type="text"] {
@@ -169,58 +251,7 @@ $email = $_SESSION['email'];
     background-color: #0b7dda;
 }
 
-/* Dark Mode Toggle */
-.toggle-container {
-    display: flex;
-    align-items: center;
-}
-
-.switch {
-    position: relative;
-    display: inline-block;
-    width: 34px;
-    height: 20px;
-}
-
-.switch input { 
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    transition: 0.4s;
-    border-radius: 50px;
-}
-
-.slider:before {
-    position: absolute;
-    content: "";
-    height: 12px;
-    width: 12px;
-    border-radius: 50%;
-    left: 4px;
-    bottom: 4px;
-    background-color: white;
-    transition: 0.4s;
-}
-
-input:checked + .slider {
-    background-color: #2196F3;
-}
-
-input:checked + .slider:before {
-    transform: translateX(14px);
-}
-
-/* Logout Button (moved to the right) */
+/* Logout Button */
 .user-info {
     display: flex;
     justify-content: flex-end;
@@ -276,79 +307,48 @@ button#logoutConfirmBtn:hover {
     background-color: darkred;
 }
 
-/* Table Styling */
-table {
-    width: 100%;
-    margin-top: 20px;
-    border-collapse: collapse;
-}
-
-th, td {
-    padding: 10px;
-    text-align: left;
-    border: 1px solid #ddd;
-}
-
-/* Dark Mode Styling */
-body.dark-mode {
-    background-color: #121212;
-    color: #e0e0e0;
-}
-
-body.dark-mode .navbar {
-    background-color: #1f1f1f;
-}
-
-body.dark-mode button {
-    background-color: #2196F3;
-}
-
-body.dark-mode table {
-    background-color: #333;
-}
-
-body.dark-mode .modal-content {
-    background-color: #424242;
-}
-
 </style>
 
 <script>
+// Modal functionality for Navbar items
+document.getElementById('usersBtn').onclick = function() {
+    document.getElementById('usersModal').style.display = 'block';
+};
 
-// Dark Mode Toggle
-document.getElementById('darkModeToggle').addEventListener('change', function () {
-    if (this.checked) {
-        document.body.classList.add('dark-mode');
-    } else {
-        document.body.classList.remove('dark-mode');
-    }
-});
+document.getElementById('departmentsBtn').onclick = function() {
+    document.getElementById('departmentsModal').style.display = 'block';
+};
 
-// Open User Info Modal (for Logout)
+document.getElementById('productsBtn').onclick = function() {
+    document.getElementById('productsModal').style.display = 'block';
+};
+
+document.getElementById('categoriesBtn').onclick = function() {
+    document.getElementById('categoriesModal').style.display = 'block';
+};
+
+document.getElementById('inventoryBtn').onclick = function() {
+    document.getElementById('inventoryModal').style.display = 'block';
+};
+
+document.getElementById('suppliersBtn').onclick = function() {
+    document.getElementById('suppliersModal').style.display = 'block';
+};
+
+// Close Modals
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
+}
+
+// Logout functionality
 document.getElementById('logoutBtn').onclick = function() {
     document.getElementById('userInfoModal').style.display = 'block';
 };
 
-// Close User Info Modal
-function closeUserInfoModal() {
-    document.getElementById('userInfoModal').style.display = 'none';
-}
-
-// Logout Confirmation
 document.getElementById('logoutConfirmBtn').onclick = function() {
     window.location.href = 'logout.php';
 };
-
-// Close Add User Modal
-function closeModal() {
-    document.getElementById('addUserModal').style.display = 'none';
-}
-
-// Show Add User Modal
-document.getElementById('show-add-user-modal').onclick = function() {
-    document.getElementById('addUserModal').style.display = 'block';
-};
-
 </script>
+
 </body>
 </html>
