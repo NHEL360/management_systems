@@ -50,30 +50,8 @@ if (isset($_POST['login'])) {
                 
                 <button type="submit" name="login">Login</button>
             </form>
-            <p>Don't have an account? <a href="javascript:void(0);" id="show-register-modal">Register here</a></p>
+            <p>Don't have an account? <a href="register.php">Register here</a></p>
         </div>
     </div>
-
-    <!-- Register Modal -->
-    <div id="register-modal" class="modal">
-        <div class="modal-content">
-            <span id="close-register-modal" class="close">&times;</span>
-            <h2>Register</h2>
-            <form action="register.php" method="POST">
-                <label for="new-username">Username:</label>
-                <input type="text" name="username" id="new-username" required>
-                
-                <label for="new-password">Password:</label>
-                <input type="password" name="password" id="new-password" required>
-                
-                <label for="email">Email:</label>
-                <input type="email" name="email" id="email" required>
-                
-                <button type="submit" name="register">Register</button>
-            </form>
-        </div>
-    </div>
-
-    <script src="assets/js/script.js"></script>
 </body>
 </html>

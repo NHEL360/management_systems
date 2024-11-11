@@ -1,6 +1,34 @@
 <?php
 // register.php - Registration Page
 session_start();
+include('db.connection.php');
+
+if (isset($_POST['register'])) {
+    // Get registration details
+    $username = $_POST['username'];
+    $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
+    $email = $_POST['email'];
+
+    // Check if the username already exists
+    $query = "SELECT * FROM users WHERE username = :username";
+    $stmt = $pdo->prepare($query);
+    $stmt->execute([':username' => $username]);
+
+    if ($stmt->rowCount() > 0) {
+        $error_message = "Username already exists.";
+    } else {
+        // Insert new user into the database
+        $insertQuery = "INSERT INTO users (username, password, email) VALUES (:username, :password, :email)";
+        $stmt = $pdo->prepare($insertQuery);
+        if ($stmt->execute([':username' => $username, ':password' => $password, ':email' => $email])) {
+            // Redirect to login page after successful registration
+            header('Location: index.php');
+            exit();
+        } else {
+            $error_message = "Error registering user.";
+        }
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -16,11 +44,8 @@ session_start();
     <div class="container">
         <div class="register-form">
             <h2>Register</h2>
-            <?php if (isset($_SESSION['error_message'])) { 
-                echo "<p class='error'>{$_SESSION['error_message']}</p>"; 
-                unset($_SESSION['error_message']); 
-            } ?>
-            <form action="register_process.php" method="POST">
+            <?php if (isset($error_message)) { echo "<p class='error'>$error_message</p>"; } ?>
+            <form action="register.php" method="POST">
                 <label for="username">Username:</label>
                 <input type="text" name="username" id="username" required>
                 

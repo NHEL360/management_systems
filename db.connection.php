@@ -5,13 +5,10 @@ $username = "root";           // Database username
 $password = "";               // Database password (empty for XAMPP default)
 
 try {
-    // Creating a PDO instance to connect to MySQL
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    // Set the PDO error mode to exception for better error handling
+    $pdo = new PDO('mysql:host=localhost;dbname=management_systems', 'root', '');
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    echo "Connection successful";  // Optional success message
+    // No echo statement here
 } catch (PDOException $e) {
-    // In case of connection failure, display the error message
-    echo "Connection failed: " . $e->getMessage();
+    // Log or handle connection errors as needed
+    die("Database connection failed: " . $e->getMessage());
 }
-?>
