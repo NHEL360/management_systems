@@ -38,11 +38,11 @@ $email = isset($_SESSION['email']) ? $_SESSION['email'] : '';
         <!-- Navbar Links with Icons -->
         <div class="nav-links">
             <a href="#" id="usersBtn"><i class="fa fa-users"></i> Users</a>
-            <a href="#" id="departmentsBtn"><i class="fa fa-building"></i> Departments</a>
-            <a href="#" id="productsBtn"><i class="fa fa-cogs"></i> Products</a>
-            <a href="#" id="categoriesBtn"><i class="fa fa-list"></i> Categories</a>
-            <a href="#" id="inventoryBtn"><i class="fa fa-archive"></i> Inventory</a>
-            <a href="#" id="suppliersBtn"><i class="fa fa-truck"></i> Suppliers</a>
+            <a href="department.php" id="departmentsBtn"><i class="fa fa-building"></i> Departments</a>
+            <a href="products.php" id="productsBtn"><i class="fa fa-cogs"></i> Products</a>
+            <a href="categories.php" id="categoriesBtn"><i class="fa fa-list"></i> Categories</a>
+            <a href="inventory.php" id="inventoryBtn"><i class="fa fa-archive"></i> Inventory</a>
+            <a href="suppliers.php" id="suppliersBtn"><i class="fa fa-truck"></i> Suppliers</a>
         </div>
 
         <!-- Dark Mode Toggle Icon (Left Center) -->
