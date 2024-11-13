@@ -8,7 +8,9 @@ $sql = "SELECT p.id, p.name, p.description, p.price, c.name AS category, s.name 
         JOIN categories c ON p.category_id = c.id
         JOIN suppliers s ON p.supplier_id = s.id";
 
-$result = $conn->query($sql);
+// Execute the query using PDO
+$stmt = $pdo->query($sql);
+$products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -34,15 +36,15 @@ $result = $conn->query($sql);
         </thead>
         <tbody>
             <?php
-            if ($result->num_rows > 0) {
-                while($row = $result->fetch_assoc()) {
+            if ($products) {
+                foreach($products as $row) {
                     echo "<tr>
-                            <td>" . $row['id'] . "</td>
-                            <td>" . $row['name'] . "</td>
-                            <td>" . $row['description'] . "</td>
-                            <td>" . $row['category'] . "</td>
-                            <td>" . $row['price'] . "</td>
-                            <td>" . $row['supplier'] . "</td>
+                            <td>" . htmlspecialchars($row['id']) . "</td>
+                            <td>" . htmlspecialchars($row['name']) . "</td>
+                            <td>" . htmlspecialchars($row['description']) . "</td>
+                            <td>" . htmlspecialchars($row['category']) . "</td>
+                            <td>" . htmlspecialchars($row['price']) . "</td>
+                            <td>" . htmlspecialchars($row['supplier']) . "</td>
                           </tr>";
                 }
             } else {
@@ -53,8 +55,3 @@ $result = $conn->query($sql);
     </table>
 </body>
 </html>
-
-<?php
-// Close connection
-$conn->close();
-?>

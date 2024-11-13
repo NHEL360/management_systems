@@ -4,7 +4,8 @@ include('db.connection.php');
 
 // Query to fetch categories
 $sql = "SELECT * FROM categories";
-$result = $conn->query($sql);
+$stmt = $pdo->query($sql); // Execute query using PDO
+$categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -26,11 +27,11 @@ $result = $conn->query($sql);
         </thead>
         <tbody>
             <?php
-            if ($result->num_rows > 0) {
-                while($row = $result->fetch_assoc()) {
+            if ($categories) {
+                foreach ($categories as $row) {
                     echo "<tr>
-                            <td>" . $row['id'] . "</td>
-                            <td>" . $row['name'] . "</td>
+                            <td>" . htmlspecialchars($row['id']) . "</td>
+                            <td>" . htmlspecialchars($row['name']) . "</td>
                           </tr>";
                 }
             } else {
@@ -41,8 +42,3 @@ $result = $conn->query($sql);
     </table>
 </body>
 </html>
-
-<?php
-// Close connection
-$conn->close();
-?>

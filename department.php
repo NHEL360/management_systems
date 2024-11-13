@@ -2,9 +2,9 @@
 // department.php - Display and manage departments
 include('db.connection.php');
 
-// Fetch departments from the database
+// Fetch departments from the database using PDO
 $query = "SELECT * FROM departments";
-$result = $mysqli->query($query);
+$result = $pdo->query($query);
 ?>
 
 <!DOCTYPE html>
@@ -43,10 +43,10 @@ $result = $mysqli->query($query);
             </tr>
         </thead>
         <tbody>
-            <?php while ($row = $result->fetch_assoc()) { ?>
+            <?php while ($row = $result->fetch(PDO::FETCH_ASSOC)) { ?>
                 <tr>
-                    <td><?php echo $row['id']; ?></td>
-                    <td><?php echo $row['name']; ?></td>
+                    <td><?php echo htmlspecialchars($row['id']); ?></td>
+                    <td><?php echo htmlspecialchars($row['name']); ?></td>
                     <td>
                         <a href="editdepartment.php?id=<?php echo $row['id']; ?>">Edit</a>
                         <a href="deletedepartment.php?id=<?php echo $row['id']; ?>">Delete</a>
@@ -66,8 +66,10 @@ $result = $mysqli->query($query);
 if (isset($_POST['addDepartment'])) {
     $departmentName = $_POST['departmentName'];
 
-    $insertQuery = "INSERT INTO departments (name) VALUES ('$departmentName')";
-    if ($mysqli->query($insertQuery)) {
+    // Use a prepared statement to insert the department
+    $insertQuery = "INSERT INTO departments (name) VALUES (:name)";
+    $stmt = $pdo->prepare($insertQuery);
+    if ($stmt->execute([':name' => $departmentName])) {
         echo "<script>alert('Department added successfully!'); window.location='department.php';</script>";
     } else {
         echo "<script>alert('Error adding department.');</script>";
