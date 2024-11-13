@@ -4,7 +4,7 @@ include('db.connection.php');
 
 // Query to fetch suppliers
 $sql = "SELECT * FROM suppliers";
-$result = $conn->query($sql);
+$result = $pdo->query($sql);
 ?>
 
 <!DOCTYPE html>
@@ -26,11 +26,12 @@ $result = $conn->query($sql);
         </thead>
         <tbody>
             <?php
-            if ($result->num_rows > 0) {
-                while($row = $result->fetch_assoc()) {
+            // Check if there are results
+            if ($result->rowCount() > 0) {
+                while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
                     echo "<tr>
-                            <td>" . $row['id'] . "</td>
-                            <td>" . $row['name'] . "</td>
+                            <td>" . htmlspecialchars($row['id']) . "</td>
+                            <td>" . htmlspecialchars($row['name']) . "</td>
                           </tr>";
                 }
             } else {
@@ -41,8 +42,3 @@ $result = $conn->query($sql);
     </table>
 </body>
 </html>
-
-<?php
-// Close connection
-$conn->close();
-?>
