@@ -37,7 +37,7 @@ $email = isset($_SESSION['email']) ? $_SESSION['email'] : '';
 
         <!-- Navbar Links with Icons -->
         <div class="nav-links">
-            <a href="#" id="usersBtn"><i class="fa fa-users"></i> Users</a>
+            <a href="users.php" id="usersBtn"><i class="fa fa-users"></i> Users</a>
             <a href="department.php" id="departmentsBtn"><i class="fa fa-building"></i> Departments</a>
             <a href="products.php" id="productsBtn"><i class="fa fa-cogs"></i> Products</a>
             <a href="categories.php" id="categoriesBtn"><i class="fa fa-list"></i> Categories</a>

@@ -1,10 +1,38 @@
 <?php
-// department.php - Display and manage departments
+// users.php - Manage users
 include('db.connection.php');
 
-// Fetch departments from the database using PDO
-$query = "SELECT * FROM departments";
+// Fetch users from the database
+$query = "SELECT * FROM users";
 $result = $pdo->query($query);
+
+// Add user functionality
+if (isset($_POST['addUser'])) {
+    $username = $_POST['username'];
+    $email = $_POST['email'];
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Hashing password
+
+    // Insert new user into the database
+    $insertQuery = "INSERT INTO users (username, email, password) VALUES (:username, :email, :password)";
+    $stmt = $pdo->prepare($insertQuery);
+    if ($stmt->execute([':username' => $username, ':email' => $email, ':password' => $password])) {
+        echo "<script>alert('User added successfully!'); window.location='users.php';</script>";
+    } else {
+        echo "<script>alert('Error adding user.');</script>";
+    }
+}
+
+// Delete user functionality
+if (isset($_GET['delete'])) {
+    $userId = $_GET['delete'];
+    $deleteQuery = "DELETE FROM users WHERE id = :id";
+    $stmt = $pdo->prepare($deleteQuery);
+    if ($stmt->execute([':id' => $userId])) {
+        echo "<script>alert('User deleted successfully!'); window.location='users.php';</script>";
+    } else {
+        echo "<script>alert('Error deleting user.');</script>";
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -12,20 +40,19 @@ $result = $pdo->query($query);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Departments</title>
+    <title>Manage Users</title>
     <link rel="stylesheet" href="assets/css/styles.css">
     <style>
         /* General Layout */
         body {
             font-family: 'Arial', sans-serif;
+            background-color: #f4f7fa;
             margin: 0;
             padding: 0;
-            background-color: #f5f5f5;
         }
 
         .container {
             padding: 20px;
-            margin-top: 30px;
             max-width: 1200px;
             margin: auto;
         }
@@ -121,10 +148,6 @@ $result = $pdo->query($query);
             background-color: #039a5f;
         }
 
-        .modal-footer .icon {
-            margin-left: 10px;
-        }
-
         /* Button Styling */
         .button-container {
             text-align: center;
@@ -169,19 +192,20 @@ $result = $pdo->query($query);
 </head>
 <body>
     <div class="container">
-        <h2>Departments</h2>
+        <h2>Users</h2>
 
-        <!-- Add Department Button -->
+        <!-- Add User Button -->
         <div class="button-container">
-            <button id="addDepartmentBtn">Add Department</button>
+            <button id="addUserBtn">Add User</button>
         </div>
 
-        <!-- Departments Table -->
+        <!-- Users Table -->
         <table>
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Name</th>
+                    <th>Username</th>
+                    <th>Email</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -189,10 +213,11 @@ $result = $pdo->query($query);
                 <?php while ($row = $result->fetch(PDO::FETCH_ASSOC)) { ?>
                     <tr>
                         <td><?php echo htmlspecialchars($row['id']); ?></td>
-                        <td><?php echo htmlspecialchars($row['name']); ?></td>
+                        <td><?php echo htmlspecialchars($row['username']); ?></td>
+                        <td><?php echo htmlspecialchars($row['email']); ?></td>
                         <td>
-                            <a href="editdepartment.php?id=<?php echo $row['id']; ?>">Edit</a> |
-                            <a href="deletedepartment.php?id=<?php echo $row['id']; ?>">Delete</a>
+                            <a href="edituser.php?id=<?php echo $row['id']; ?>">Edit</a> |
+                            <a href="users.php?delete=<?php echo $row['id']; ?>" onclick="return confirm('Are you sure you want to delete this user?');">Delete</a>
                         </td>
                     </tr>
                 <?php } ?>
@@ -200,15 +225,19 @@ $result = $pdo->query($query);
         </table>
     </div>
 
-    <!-- Add Department Modal -->
-    <div id="addDepartmentModal" class="modal">
+    <!-- Add User Modal -->
+    <div id="addUserModal" class="modal">
         <div class="modal-content">
-            <span id="closeAddDepartmentModal" class="close">&times;</span>
-            <h2>Add Department</h2>
-            <form action="department.php" method="POST">
-                <label for="departmentName">Department Name:</label>
-                <input type="text" id="departmentName" name="departmentName" required>
-                <button type="submit" name="addDepartment">Add Department</button>
+            <span id="closeAddUserModal" class="close">&times;</span>
+            <h2>Add User</h2>
+            <form action="users.php" method="POST">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required><br><br>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required><br><br>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required><br><br>
+                <button type="submit" name="addUser">Add User</button>
             </form>
         </div>
     </div>
@@ -226,49 +255,46 @@ $result = $pdo->query($query);
                     Yes, Go Back
                     <span class="icon">🏢</span>
                 </button>
-                <button onclick="closeModal();">Cancel</button>
+                <button onclick="closeBackToDashboardModal();">Cancel</button>
             </div>
         </div>
     </div>
 
     <script>
+        // Function to open the add user modal
+        document.getElementById("addUserBtn").onclick = function() {
+            document.getElementById("addUserModal").style.display = "block";
+        }
+
+        // Function to close the add user modal
+        function closeAddUserModal() {
+            document.getElementById("addUserModal").style.display = "none";
+        }
+
         // Function to open the back to dashboard modal
         document.getElementById("backToDashboardBtn").onclick = function() {
             document.getElementById("backToDashboardModal").style.display = "block";
         }
 
-        // Function to close the modal
-        function closeModal() {
+        // Function to close the back to dashboard modal
+        function closeBackToDashboardModal() {
             document.getElementById("backToDashboardModal").style.display = "none";
         }
 
-        // Close the modal when the user clicks the close button
-        document.getElementById("closeAddDepartmentModal").onclick = function() {
-            document.getElementById("addDepartmentModal").style.display = "none";
+        // Close modal on clicking the close button
+        document.getElementById("closeAddUserModal").onclick = function() {
+            closeAddUserModal();
         }
 
-        // Close the modal when the user clicks outside of it
+        // Close modal when clicking outside of it
         window.onclick = function(event) {
+            if (event.target == document.getElementById("addUserModal")) {
+                closeAddUserModal();
+            }
             if (event.target == document.getElementById("backToDashboardModal")) {
-                closeModal();
+                closeBackToDashboardModal();
             }
         }
     </script>
 </body>
 </html>
-
-<?php
-// Add Department functionality
-if (isset($_POST['addDepartment'])) {
-    $departmentName = $_POST['departmentName'];
-
-    // Use a prepared statement to insert the department
-    $insertQuery = "INSERT INTO departments (name) VALUES (:name)";
-    $stmt = $pdo->prepare($insertQuery);
-    if ($stmt->execute([':name' => $departmentName])) {
-        echo "<script>alert('Department added successfully!'); window.location='department.php';</script>";
-    } else {
-        echo "<script>alert('Error adding department.');</script>";
-    }
-}
-?>
